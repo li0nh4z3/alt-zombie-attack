@@ -73,22 +73,28 @@ class Zombie {
 }
 
 class Platform {
-    constructor({ x, y }) {
+    constructor({ x, y, img }) {
         this.position = {
             x,
             y
         }
         this.width = 400
         this.height = 50
+        
+        this.img = img
     }
 
     draw() {
-        ctx.fillStyle = 'blue'
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+        //ctx.fillStyle = 'blue'
+        //ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+        ctx.drawImage(this.img, this.position.x, this.position.y, this.width, this.height)
     }
 }
 
-const platforms = [new Platform({x: -50, y: 600}), new Platform({x: 350 - 3, y: 600})]
+const img = new Image()
+img.src = 'img/platform.png'
+
+const platforms = [new Platform({x: -50, y: 600, img}), new Platform({x: 350 - 3, y: 600, img})]
 const player = new Player()
 const zombies = [new Zombie()]
 const keys = {
