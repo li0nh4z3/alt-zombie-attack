@@ -46,7 +46,7 @@ class Zombie {
     constructor() {
         this.position = {
             x: -50,
-            y: canvas.height - 150
+            y: canvas.height - 250
         }
         this.speed = {
             x: 0.5,
@@ -78,25 +78,51 @@ class Platform {
             x,
             y
         }
-        this.width = 400
-        this.height = 50
-        
         this.img = img
+        this.width = 500
+        this.height = 100
+        
     }
 
     draw() {
-        //ctx.fillStyle = 'blue'
-        //ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
         ctx.drawImage(this.img, this.position.x, this.position.y, this.width, this.height)
     }
 }
 
-const img = new Image()
-img.src = 'img/platform.png'
+class Element {
+    constructor({ x, y, img }) {
+        this.position = {
+            x,
+            y
+        }
+        this.img = img
+        this.width = 500
+        this.height = 100
+        
+    }
 
-const platforms = [new Platform({x: -50, y: 600, img}), new Platform({x: 350 - 3, y: 600, img})]
+    draw() {
+        ctx.drawImage(this.img, this.position.x, this.position.y, this.width, this.height)
+    }
+}
+
+createImage = (imgSrc) => {
+    const img = new Image()
+    img.src = imgSrc
+    return img
+}
+const platformSrc = 'img/platform.png'
+let platformImg = createImage(platformSrc)
+const firstBackgroundSrc = 'img/background1.png'
+let firstBackgroundImg = createImage(firstBackgroundSrc)
+const mainBackgroundSrc = 'img/background2.png'
+let mainBackgroundImg = createImage(mainBackgroundSrc)
+
+
+const platforms = [new Platform({x: -50, y: 550, img: platformImg}), new Platform({x: 450 - 3, y: 550, img: platformImg})]
 const player = new Player()
 const zombies = [new Zombie()]
+const elements = [new Element({x: 0, y: 0, img: firstBackgroundImg})]
 const keys = {
     right: {
         pressed: false
@@ -116,10 +142,10 @@ animate = () => {
     requestAnimationFrame(animate)
     ctx.fillStyle = 'white'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-    player.update()
     platforms.forEach(platform => {    
         platform.draw()
     })
+    player.update()
     zombies.forEach(zombie => {
         zombie.update()
     })
