@@ -35,7 +35,7 @@ class Player {
             this.img, 
             190 * this.frames,
             0,
-            185,
+            190,
             270,
             this.position.x, 
             this.position.y, 
