@@ -91,13 +91,13 @@ class Platform {
 }
 
 class Element {
-    constructor({ x, y, img }) {
+    constructor({ x, y, img, w }) {
         this.position = {
             x,
             y
         }
         this.img = img
-        this.width = 900
+        this.width = w
         this.height = 650
         
     }
@@ -115,14 +115,18 @@ createImage = (imgSrc) => {
 
 let platformSrc = 'img/platform.png'
 let platformImg = createImage(platformSrc)
-let firstBackgroundSrc = 'img/background1.png'
-let firstBackgroundImg = createImage(firstBackgroundSrc)
-let mainBackgroundSrc = 'img/background2.png'
-let mainBackgroundImg = createImage(mainBackgroundSrc)
+
+let backgroundSrc = 'img/background.png'
+let backgroundImg = createImage(backgroundSrc)
+
+let elementsSrc = 'img/sprite_elements.png'
+let elementImg = createImage(elementsSrc)
+
 
 let platforms = []
 let platWidth = 500;
 
+let background;
 let player = new Player()
 
 let zombies = []
@@ -147,27 +151,30 @@ let intervalZ;
 init = () => {
     platformSrc = 'img/platform.png'
     platformImg = createImage(platformSrc)
-    firstBackgroundSrc = 'img/background1.png'
-    firstBackgroundImg = createImage(firstBackgroundSrc)
-    mainBackgroundSrc = 'img/background2.png'
-    mainBackgroundImg = createImage(mainBackgroundSrc)
+    backgroundSrc = 'img/background.png'
+    backgroundImg = createImage(backgroundSrc)
+    
 
 
     platforms = [
         new Platform({x: -50, y: 550, img: platformImg}), 
-        new Platform({x: platWidth - 53, y: 550, img: platformImg}),
+        new Platform({x: platWidth - 51, y: 550, img: platformImg}),
         new Platform({x: platWidth * 2 + 100, y: 550, img: platformImg}),
-        new Platform({x: platWidth * 3 + 290, y: 550, img: platformImg})
+        new Platform({x: platWidth * 3 + 290, y: 550, img: platformImg}),
+        new Platform({x: platWidth * 4 + 350, y: 550, img: platformImg}),
+        new Platform({x: platWidth * 5 + 200, y: 550, img: platformImg})
     ]
 
     player = new Player()
 
     zombies = [new Zombie()]
 
+    background = new Element({x: 0, y: 0, img: backgroundImg, w: 900})
+    
     elements = [
-        new Element({x: 0, y: 0, img: firstBackgroundImg}), 
-        new Element({x: 900 - 3, y: 0, img: mainBackgroundImg})
+        new Element({x: 0, y: 0, img: elementImg, w: 5400})
     ]
+
     scrollOffset = 0
     clearInterval(intervalZ)
 }
@@ -178,6 +185,7 @@ animate = () => {
     requestAnimationFrame(animate)
     ctx.fillStyle = 'white'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
+    background.draw()
 
     elements.forEach(element => {
         element.draw()
@@ -208,7 +216,7 @@ animate = () => {
                 platform.position.x -= player.rush
             })
             elements.forEach(element => {    
-                element.position.x -= player.rush *.88
+                element.position.x -= player.rush*.88
             })
         } else if (keys.left.pressed) {
             scrollOffset -= 5
@@ -216,7 +224,7 @@ animate = () => {
                 platform.position.x += player.rush
             })
             elements.forEach(element => {    
-                element.position.x += player.rush *.88
+                element.position.x += player.rush*.88
             })
         }
     }
