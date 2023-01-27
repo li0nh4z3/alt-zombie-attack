@@ -23,16 +23,30 @@ class Player {
             y: 1
         }
         this.rush = 5
-        this.width = 50
-        this.height = 80
+        this.width = 185 / 2.5
+        this.height = 270 / 2.5
+
+        this.img = createImage('img/sprite_player_left.png')
+        this.frames = 0
     }
 
     draw() {
-        ctx.fillStyle = 'red'
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+        ctx.drawImage(
+            this.img, 
+            185 * this.frames,
+            0,
+            185,
+            270,
+            this.position.x, 
+            this.position.y, 
+            this.width, 
+            this.height
+            )
     }
 
     update() {
+        this.frames++
+        if (this.frames > 8) this.frames = 0
         this.draw()
         this.position.x += this.speed.x
         this.position.y += this.speed.y
