@@ -23,7 +23,7 @@ class Player {
             y: 1
         }
         this.rush = 5
-        this.width = 185 / 2.5
+        this.width = 190 / 2.5
         this.height = 270 / 2.5
 
         this.img = createImage('img/sprite_player_left.png')
@@ -33,7 +33,7 @@ class Player {
     draw() {
         ctx.drawImage(
             this.img, 
-            185 * this.frames,
+            190 * this.frames,
             0,
             185,
             270,
