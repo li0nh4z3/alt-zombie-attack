@@ -22,6 +22,7 @@ class Player {
             x: 0,
             y: 1
         }
+        this.rush = 5
         this.width = 50
         this.height = 80
     }
@@ -38,7 +39,7 @@ class Player {
 
         if (this.position.y + this.height + this.speed.y <= canvas.height) {
             this.speed.y += gravity
-        } else this.speed.y = 0
+        }
     }
 }
 
@@ -68,7 +69,7 @@ class Zombie {
         
         if (this.position.y + this.height + this.speed.y <= canvas.height) {
             this.speed.y += gravity
-        } else this.speed.y = 0
+        }
     }
 }
 
@@ -80,7 +81,7 @@ class Platform {
         }
         this.img = img
         this.width = 500
-        this.height = 100
+        this.height = 200
         
     }
 
@@ -96,8 +97,8 @@ class Element {
             y
         }
         this.img = img
-        this.width = 500
-        this.height = 100
+        this.width = 900
+        this.height = 650
         
     }
 
@@ -111,18 +112,23 @@ createImage = (imgSrc) => {
     img.src = imgSrc
     return img
 }
-const platformSrc = 'img/platform.png'
+
+let platformSrc = 'img/platform.png'
 let platformImg = createImage(platformSrc)
-const firstBackgroundSrc = 'img/background1.png'
+let firstBackgroundSrc = 'img/background1.png'
 let firstBackgroundImg = createImage(firstBackgroundSrc)
-const mainBackgroundSrc = 'img/background2.png'
+let mainBackgroundSrc = 'img/background2.png'
 let mainBackgroundImg = createImage(mainBackgroundSrc)
 
+let platforms = []
+let platWidth = 500;
 
-const platforms = [new Platform({x: -50, y: 550, img: platformImg}), new Platform({x: 450 - 3, y: 550, img: platformImg})]
-const player = new Player()
-const zombies = [new Zombie()]
-const elements = [new Element({x: 0, y: 0, img: firstBackgroundImg})]
+let player = new Player()
+
+let zombies = []
+
+let elements = []
+
 const keys = {
     right: {
         pressed: false
@@ -134,74 +140,120 @@ const keys = {
         pressed: false
     }
 }
-
-
 let scrollOffset = 0
+
+let intervalZ;
+
+init = () => {
+    platformSrc = 'img/platform.png'
+    platformImg = createImage(platformSrc)
+    firstBackgroundSrc = 'img/background1.png'
+    firstBackgroundImg = createImage(firstBackgroundSrc)
+    mainBackgroundSrc = 'img/background2.png'
+    mainBackgroundImg = createImage(mainBackgroundSrc)
+
+
+    platforms = [
+        new Platform({x: -50, y: 550, img: platformImg}), 
+        new Platform({x: platWidth - 53, y: 550, img: platformImg}),
+        new Platform({x: platWidth * 2 + 100, y: 550, img: platformImg}),
+        new Platform({x: platWidth * 3 + 290, y: 550, img: platformImg})
+    ]
+
+    player = new Player()
+
+    zombies = [new Zombie()]
+
+    elements = [
+        new Element({x: 0, y: 0, img: firstBackgroundImg}), 
+        new Element({x: 900 - 3, y: 0, img: mainBackgroundImg})
+    ]
+    scrollOffset = 0
+    clearInterval(intervalZ)
+}
+
+
 
 animate = () => {
     requestAnimationFrame(animate)
     ctx.fillStyle = 'white'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    elements.forEach(element => {
+        element.draw()
+    })
+    
     platforms.forEach(platform => {    
         platform.draw()
     })
+    
     player.update()
+    
     zombies.forEach(zombie => {
         zombie.update()
     })
     
     //Movement
     if (keys.right.pressed && player.position.x < 400) {
-        player.speed.x = 5
+        player.speed.x = player.rush * 1.5
     } else if (keys.left.pressed && player.position.x > 100) {
-        player.speed.x = -5
+        player.speed.x = -player.rush
     } else if (keys.up.pressed) {
         player.speed.y = -10
     } else {
         player.speed.x = 0
         if (keys.right.pressed) {
-            scrollOffset += 5
+            scrollOffset += player.rush
             platforms.forEach(platform => {    
-                platform.position.x -= 5
+                platform.position.x -= player.rush
+            })
+            elements.forEach(element => {    
+                element.position.x -= player.rush *.88
             })
         } else if (keys.left.pressed) {
             scrollOffset -= 5
             platforms.forEach(platform => {    
-                platform.position.x += 5
+                platform.position.x += player.rush
+            })
+            elements.forEach(element => {    
+                element.position.x += player.rush *.88
             })
         }
     }
     
-    let interval;
+    //Zombies, collision & direction
     if (scrollOffset === 50) {
-        interval = setInterval(() => {
+        intervalZ = setInterval(() => {
             zombies.push(new Zombie())
         }, 5000)
-    } else clearInterval(interval)
-    
-    
-    
-    //Zombies collision & direction
+    }
     zombies.forEach(zombie => {
-        //zombie.speed.x *= -1
         if (keys.left.pressed && player.position.x + player.width < zombie.position.x) {
             zombie.speed.x *= -1
         } else if (player.position.x + player.width < zombie.position.x) {
             zombie.speed.x = -0.5
-        } else zombie.speed.x = 0.5
+        } else if (zombie + 1) {
+            zombie.speed.x += 0.005
+        }
+
         if (player.position.x < zombie.position.x + zombie.width + zombie.speed.x &&
             player.position.x + player.width + player.speed.x > zombie.position.x &&
             player.position.y < zombie.position.y + zombie.height &&
             player.height + player.position.y > zombie.position.y) {
                 console.log('hit')
+                zombie.speed.x = 0
         }
-        if (zombie.position.y + zombie.height <= platforms[0].position.y 
-            && zombie.position.y + zombie.height + zombie.speed.y >= platforms[0].position.y
-            && zombie.position.x + zombie.width >= platforms[0].position.x) {
-            zombie.speed.y = 0
+
+        for( let i = 0; i < platforms.length; i++) {
+            if (zombie.position.y + zombie.height <= platforms[i].position.y 
+                && zombie.position.y + zombie.height + zombie.speed.y >= platforms[i].position.y
+                && zombie.position.x + zombie.width >= platforms[i].position.x
+                && zombie.position.x <= platforms[i].position.x + platforms[i].width) {
+                zombie.speed.y = 0
+            }
         }
     })
-    
+
     //Platform collision detected
     platforms.forEach(platform => {    
         if (player.position.y + player.height <= platform.position.y 
@@ -212,51 +264,48 @@ animate = () => {
             }
     })
 
-    if (scrollOffset > 2000) {
+    //Win scenario
+    if (scrollOffset > 5000) {
         console.log('you win')
+    }
+
+    //Game Over scenario
+    if (player.position.y > canvas.height) {
+        init()
     }
 }
 
+init()
 animate()
 
 addEventListener('keydown', ({keyCode}) => {
     switch (keyCode) {
         case 37:
-            //console.log('left')
             keys.left.pressed = true
             break;
         case 39:
-            //console.log('right')
             keys.right.pressed = true
             break;
         case 38:
-            //console.log('up')
             keys.up.pressed = true
             break;
         case 34:
-            //console.log('down')
             break;
     }
-    console.log(keys.right.pressed)
 })
 
 addEventListener('keyup', ({keyCode}) => {
     switch (keyCode) {
         case 37:
-            console.log('left')
             keys.left.pressed = false
             break;
         case 39:
-            console.log('right')
             keys.right.pressed = false
             break;
         case 38:
-            console.log('up')
             keys.up.pressed = false
             break;
         case 34:
-            console.log('down')
             break;
     }
-    console.log(keys.right.pressed)
 })
