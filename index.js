@@ -47,7 +47,7 @@ class Zombie {
     constructor() {
         this.position = {
             x: -50,
-            y: canvas.height - 250
+            y: 0
         }
         this.speed = {
             x: 0.5,
@@ -74,13 +74,13 @@ class Zombie {
 }
 
 class Platform {
-    constructor({ x, y, img }) {
+    constructor({ x, y, img, w}) {
         this.position = {
             x,
             y
         }
         this.img = img
-        this.width = 500
+        this.width = w
         this.height = 200
         
     }
@@ -122,6 +122,9 @@ let backgroundImg = createImage(backgroundSrc)
 let elementsSrc = 'img/sprite_elements.png'
 let elementImg = createImage(elementsSrc)
 
+let platSmallSrc = 'img/platform_s.png'
+let platSmallImg = createImage(platSmallSrc)
+
 
 let platforms = []
 let platWidth = 500;
@@ -152,17 +155,24 @@ init = () => {
     platformSrc = 'img/platform.png'
     platformImg = createImage(platformSrc)
     backgroundSrc = 'img/background.png'
-    backgroundImg = createImage(backgroundSrc)
-    
-
+    backgroundImg = createImage(backgroundSrc)  
 
     platforms = [
-        new Platform({x: -50, y: 550, img: platformImg}), 
-        new Platform({x: platWidth - 51, y: 550, img: platformImg}),
-        new Platform({x: platWidth * 2 + 100, y: 550, img: platformImg}),
-        new Platform({x: platWidth * 3 + 290, y: 550, img: platformImg}),
-        new Platform({x: platWidth * 4 + 350, y: 550, img: platformImg}),
-        new Platform({x: platWidth * 5 + 200, y: 550, img: platformImg})
+        new Platform({x: platWidth * 3 - 24, y: 350, img: platSmallImg, w: 250}),
+        new Platform({x: platWidth * 3 + 550, y: 450, img: platSmallImg, w: 250}),
+        new Platform({x: platWidth * 3 + 950, y: 350, img: platSmallImg, w: 250}),
+        new Platform({x: platWidth * 5 + 650, y: 100, img: platSmallImg, w: 250}),
+        new Platform({x: platWidth * 5 + 1150, y: 100, img: platSmallImg, w: 250}),
+        new Platform({x: -50, y: 550, img: platformImg, w: platWidth}), 
+        new Platform({x: platWidth - 51, y: 550, img: platSmallImg, w: 250}),
+        new Platform({x: platWidth * 2 - 100, y: 550, img: platformImg, w: platWidth}),
+        new Platform({x: platWidth * 3 + 300, y: 550, img: platformImg, w: platWidth}),
+        new Platform({x: platWidth * 4 + 850, y: 550, img: platformImg, w: platWidth}),
+        new Platform({x: platWidth * 5 + 950, y: 450, img: platformImg, w: platWidth}),
+        new Platform({x: platWidth * 5 + 1600, y: 250, img: platSmallImg, w: 250}),
+        new Platform({x: platWidth * 6 + 1600, y: 250, img: platSmallImg, w: 250}),
+        new Platform({x: platWidth * 8 + 1502, y: 550, img: platSmallImg, w: 250}),
+        new Platform({x: platWidth * 7 + 1650, y: 550, img: platformImg, w: platWidth})
     ]
 
     player = new Player()
@@ -204,7 +214,7 @@ animate = () => {
     //Movement
     if (keys.right.pressed && player.position.x < 400) {
         player.speed.x = player.rush * 1.5
-    } else if (keys.left.pressed && player.position.x > 100) {
+    } else if ((keys.left.pressed && player.position.x > 100) || (keys.left.pressed && scrollOffset === 0 && player.position.x > 0)) {
         player.speed.x = -player.rush
     } else if (keys.up.pressed) {
         player.speed.y = -10
@@ -218,7 +228,7 @@ animate = () => {
             elements.forEach(element => {    
                 element.position.x -= player.rush*.88
             })
-        } else if (keys.left.pressed) {
+        } else if (keys.left.pressed && scrollOffset > 0) {
             scrollOffset -= 5
             platforms.forEach(platform => {    
                 platform.position.x += player.rush
@@ -275,6 +285,7 @@ animate = () => {
     //Win scenario
     if (scrollOffset > 5000) {
         console.log('you win')
+        clearInterval(intervalZ)
     }
 
     //Game Over scenario
