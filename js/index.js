@@ -38,8 +38,8 @@ class Player {
                 cropWidth: 180
             }
         }
-        this.currentSprite = this.sprites.run.right
-        this.currCropWidth;
+        this.currentSprite = this.sprites.stand.right
+        this.currCropWidth = 180;
     }
 
     draw() {
