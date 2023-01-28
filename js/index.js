@@ -164,6 +164,16 @@ const keys = {
 let scrollOffset = 0
 
 let intervalZ;
+let restart = document.getElementById("game-over")
+
+gameOver = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    zombies = []
+    elements = []
+    player.rush = 0
+    clearInterval(intervalZ)
+    restart.style.display = 'block'
+}
 
 init = () => {
     platformSrc = 'img/platform.png'
@@ -257,7 +267,7 @@ animate = () => {
     if (scrollOffset === 50) {
         intervalZ = setInterval(() => {
             zombies.push(new Zombie())
-        }, 5000)
+        }, 3000)
     }
     zombies.forEach(zombie => {
         if (keys.left.pressed && player.position.x + player.width < zombie.position.x) {
@@ -274,6 +284,7 @@ animate = () => {
             player.height + player.position.y > zombie.position.y) {
                 console.log('hit')
                 zombie.speed.x = 0
+                gameOver()
         }
 
         for( let i = 0; i < platforms.length; i++) {
@@ -308,8 +319,20 @@ animate = () => {
     }
 }
 
-init()
-animate()
+let title = document.querySelector('h1')
+let playButton = document.getElementById('play')
+playButton.onclick = () => {
+    playButton.style.display = 'none'
+    title.style.display = 'none'
+    init()
+    animate()
+}
+let restartButton = document.getElementById('restart-game-over')
+restartButton.onclick = () => {
+    restart.style.display = 'none'
+    init()
+}
+
 
 addEventListener('keydown', ({keyCode}) => {
     switch (keyCode) {
