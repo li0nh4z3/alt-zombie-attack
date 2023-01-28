@@ -23,14 +23,14 @@ class Player {
             y: 1
         }
         this.rush = 5
-        this.width = 190 / 2.5
-        this.height = 270 / 2.5
+        this.width = 190 / 5
+        this.height = 270 / 5
 
-        this.img = createImage('img/sprite_player_right.png')
+        this.img = createImage('img/sprite_player_rightNew.png')
         this.frames = 0
         this.sprites = {
             run : {
-                right: createImage('img/sprite_player_right.png'),
+                right: createImage('img/sprite_player_rightNew.png'),
                 cropWidth: 190
             }
         }
