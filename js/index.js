@@ -28,11 +28,18 @@ class Player {
 
         this.img = createImage('img/sprite_player_left.png')
         this.frames = 0
+        this.sprites = {
+            run : {
+                left: createImage('img/sprite_player_left.png'),
+                right: createImage('img/sprite_player_right.png')
+            }
+        }
+        this.currentSprite = this.sprites.run.left
     }
 
     draw() {
         ctx.drawImage(
-            this.img, 
+            this.currentSprite, 
             190 * this.frames,
             0,
             190,
@@ -166,11 +173,13 @@ let scrollOffset = 0
 let intervalZ;
 let restart = document.getElementById("game-over")
 
+//Game Over function
 gameOver = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     zombies = []
     elements = []
     player.rush = 0
+    player.speed.y = -10
     clearInterval(intervalZ)
     restart.style.display = 'block'
 }
@@ -313,7 +322,7 @@ animate = () => {
         clearInterval(intervalZ)
     }
 
-    //Game Over scenario
+    //Falling scenario
     if (player.position.y > canvas.height) {
         init()
     }
@@ -338,14 +347,13 @@ addEventListener('keydown', ({keyCode}) => {
     switch (keyCode) {
         case 37:
             keys.left.pressed = true
+            player.currentSprite = player.sprites.run.left
             break;
         case 39:
             keys.right.pressed = true
             break;
         case 38:
             keys.up.pressed = true
-            break;
-        case 34:
             break;
     }
 })
@@ -360,8 +368,6 @@ addEventListener('keyup', ({keyCode}) => {
             break;
         case 38:
             keys.up.pressed = false
-            break;
-        case 34:
             break;
     }
 })
