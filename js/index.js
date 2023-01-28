@@ -26,23 +26,24 @@ class Player {
         this.width = 190 / 2.5
         this.height = 270 / 2.5
 
-        this.img = createImage('img/sprite_player_left.png')
+        this.img = createImage('img/sprite_player_right.png')
         this.frames = 0
         this.sprites = {
             run : {
-                left: createImage('img/sprite_player_left.png'),
-                right: createImage('img/sprite_player_right.png')
+                right: createImage('img/sprite_player_right.png'),
+                cropWidth: 190
             }
         }
-        this.currentSprite = this.sprites.run.left
+        this.currentSprite = this.sprites.run.right
+        this.currentCropWidth = 190
     }
 
     draw() {
         ctx.drawImage(
             this.currentSprite, 
-            190 * this.frames,
+            this.currentCropWidth * this.frames,
             0,
-            190,
+            this.currentCropWidth,
             270,
             this.position.x, 
             this.position.y, 
@@ -347,10 +348,11 @@ addEventListener('keydown', ({keyCode}) => {
     switch (keyCode) {
         case 37:
             keys.left.pressed = true
-            player.currentSprite = player.sprites.run.left
             break;
         case 39:
             keys.right.pressed = true
+            player.currentSprite = player.sprites.run.right
+            player.currentCropWidth = player.sprites.run.cropWidth
             break;
         case 38:
             keys.up.pressed = true
