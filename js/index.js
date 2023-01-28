@@ -23,19 +23,23 @@ class Player {
             y: 1
         }
         this.rush = 5
-        this.width = 190 / 5
-        this.height = 270 / 5
+        this.width = 190 / 3
+        this.height = 270 / 3
 
-        this.img = createImage('img/sprite_player_rightNew.png')
+        this.img = createImage('img/sprite_player_standr.png')
         this.frames = 0
         this.sprites = {
             run : {
-                right: createImage('img/sprite_player_rightNew.png'),
+                right: createImage('img/sprite_player_right.png'),
                 cropWidth: 190
+            },
+            stand : {
+                right: createImage('img/sprite_player_standr.png'),
+                cropWidth: 180
             }
         }
         this.currentSprite = this.sprites.run.right
-        this.currCropWidth = 190
+        this.currCropWidth;
     }
 
     draw() {
