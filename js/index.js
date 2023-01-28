@@ -79,13 +79,13 @@ class Zombie {
             x: 0.5,
             y: 0
         }
-        this.width = 40
-        this.height = 70
+        this.width = 60
+        this.height = 90
+        this.img = createImage('img/zombie_right.png')
     }
 
     draw() {
-        ctx.fillStyle = 'green'
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+        ctx.drawImage(this.img, this.position.x, this.position.y, this.width, this.height)
     }
 
     update() {
