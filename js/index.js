@@ -31,7 +31,7 @@ class Player {
         this.sprites = {
             run : {
                 right: createImage('img/sprite_player_right.png'),
-                cropWidth: 190
+                cropWidth: 190 
             },
             stand : {
                 right: createImage('img/sprite_player_standr.png'),
@@ -251,7 +251,7 @@ animate = () => {
     
     //Movement
     if (keys.right.pressed && player.position.x < 400) {
-        player.speed.x = player.rush * 1.5
+        player.speed.x = player.rush * 2
     } else if ((keys.left.pressed && player.position.x > 100) || (keys.left.pressed && scrollOffset === 0 && player.position.x > 0)) {
         player.speed.x = -player.rush
     } else if (keys.up.pressed) {
@@ -281,7 +281,7 @@ animate = () => {
     if (scrollOffset === 50) {
         intervalZ = setInterval(() => {
             zombies.push(new Zombie())
-        }, 3000)
+        }, 2000)
     }
     zombies.forEach(zombie => {
         if (keys.left.pressed && player.position.x + player.width < zombie.position.x) {
